@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login | AquaTeck Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css"/>
+
+    <!-- Firebase SDK compat (v9 compat versie) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  </head>
+  <body>
+    <h1>Login bij AquaTeck Base</h1>
+    <div class="login-container">
+      <form id="loginForm">
+        <label for="email">E-mailadres</label>
+        <input type="email" id="email" required />
+
+        <label for="password">Wachtwoord</label>
+        <input type="password" id="password" required />
+
+        <button type="submit" id="loginEmail">Inloggen</button>
+      </form>
+
+      <hr>
+      <button id="loginGoogle">Login met Google</button>
+      <div id="error" class="error-message" role="alert" aria-live="assertive"></div>
+    </div>
+
+    <script>
+      // ===== Elementen =====
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const loginEmailBtn = document.getElementById('loginEmail');
+      const loginGoogleBtn = document.getElementById('loginGoogle');
+      const errorText = document.getElementById('error');
+      const loginForm = document.getElementById('loginForm');
+
+      // ===== Email/Wachtwoord Login =====
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // voorkomt dat de pagina herlaadt
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        auth.signInWithEmailAndPassword(email, password)
+          .then(userCredential => {
+            window.location.href = "dashboard.html";
+          })
+          .catch(error => {
+            errorText.textContent = error.message;
+          });
+      });
+
+      // ===== Google Login =====
+      loginGoogleBtn.addEventListener('click', () => {
+        auth.signInWithPopup(googleProvider)
+          .then(result => {
+            window.location.href = "dashboard.html";
+          })
+          .catch(error => {
+            errorText.textContent = error.message;
+          });
+      });
+
+      // ===== Auto redirect als al ingelogd =====
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          window.location.href = "dashboard.html";
+        }
+      });
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
